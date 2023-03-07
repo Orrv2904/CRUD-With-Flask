@@ -1,0 +1,22 @@
+$primary-color: #009879;
+$secondary-color: rgb(85, 84, 84);
+$border: collapse;
+$margn: 25px 0;
+$size: 0.9rem;
+$ffamily: sans-serif;
+$minw: 400px;
+$shadows: 0 0 20px rgba(0, 0, 0, 0.15);
+$txtalgn: center;
+
+  .ui-state-default{
+    background-color: $primary-color;
+    color: #fff;
+    border: 1px solid $secondary-color;
+    border-collapse: $border;
+    margin: $margn;
+    font-size: $size;
+    font-family: $ffamily;
+    min-width: $minw;
+    box-shadow: $shadows;
+    text-align: $txtalgn;
+  }
