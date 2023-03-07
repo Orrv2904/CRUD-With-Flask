@@ -1,6 +1,10 @@
 $primary-color: #009879;
 $secondary-color: rgb(85, 84, 84);
+$btn: #00b894 !important;
+$btn-color: black !important; 
+$tb-color: #fff !important;
 $border: collapse;
+$solid: 1px solid;
 $margn: 25px 0;
 $size: 0.9rem;
 $ffamily: sans-serif;
@@ -10,8 +14,8 @@ $txtalgn: center;
 
   .ui-state-default{
     background-color: $primary-color;
-    color: #fff;
-    border: 1px solid $secondary-color;
+    color: $tb-color;
+    border: $solid $secondary-color;
     border-collapse: $border;
     margin: $margn;
     font-size: $size;
@@ -19,4 +23,9 @@ $txtalgn: center;
     min-width: $minw;
     box-shadow: $shadows;
     text-align: $txtalgn;
+  }
+
+  .page-item.active .page-link{
+    background-color: $btn;
+    color: $btn-color;
   }
