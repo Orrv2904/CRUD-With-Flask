@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, flash, redirect
 from flask import url_for
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -10,6 +10,7 @@ load_dotenv()
 
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'web50'
 #app.static_folder = 'statics\sass\style.css'
 
 engine = create_engine(os.getenv("DATABASE_URL"))
@@ -25,3 +26,30 @@ def index():
 def favicon():
     return url_for('static', filename='statics/images/ico/mobilecheckintravelflightairplane_109781.ico')
 
+
+
+@app.route('/editar_registro', methods=['POST'])
+def editar_registro():
+    # Recopila datos del formulario
+    id_viaje = request.form.get('id')
+    origen = request.form.get('origin')
+    destino = request.form.get('destination')
+    duracion = request.form.get('duration')
+    # Valida datos del formulario
+    if not origen or not destino or not duracion:
+        flash('Todos los campos son requeridos', 'error')
+        return redirect(url_for('editar_registro', id=id_registro))
+    # Actualiza registro en la base de datos
+    try:
+        actualizar = text("UPDATE flights SET origin=:origen, destination=:destino, duration=:duracion WHERE id=:id")
+        db.session.execute(actualizar, {'origen': origen, 'destino': destino, 'duracion': duracion, 'id': id_viaje})
+        db.commit()
+    except Exception as e:
+        flash(f'Error al actualizar viaje: {e}', 'error')
+        return redirect(url_for('index'))
+    if not registro:
+        flash('Registro no encontrado', 'error')
+        return redirect(url_for('index'))
+    # Redirige al usuario a la página de detalles del registro actualizado
+    flash('Registro actualizado correctamente', 'success')
+    return redirect(url_for('detalle_registro', id=id_viaje))
