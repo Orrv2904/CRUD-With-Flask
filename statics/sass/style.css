@@ -14,4 +14,8 @@
 .page-item.active .page-link {
   background-color: #00b894 !important;
   color: black !important;
+}
+
+.page-link {
+  color: black !important;
 }/*# sourceMappingURL=style.css.map */
