@@ -54,8 +54,6 @@ def editar_registro():
 
 @app.route('/agregar_vuelo', methods=['POST'])
 def agregar_vuelo():
-    engine = create_engine(os.getenv("DATABASE_URL"))
-    db = scoped_session(sessionmaker(bind=engine))
     if request.method == 'POST':
         if not request.form.get("origin") or not  request.form.get("destination") or not  request.form.get("duration"):
             #flash("Complete los campos faltantes")
@@ -63,17 +61,25 @@ def agregar_vuelo():
         forigin = request.form.get("origin")
         fdestination = request.form.get("destination")
         fduration = request.form.get("duration")
-        ingresar = text("INSERT INTO flights (origin, destination, duration) VALUES (?,?,?)")
+        ingresar = text("INSERT INTO flights (origin, destination, duration) VALUES (:forigin,:fdestination,:fduration)")
         #db.execute(ingresar, forigin, fdestination, fduration)
         #db.commit()
         #flash("Vuelo registrado correctamente")
         #return redirect(url_for('Index'))
-        try:
-            db.execute(ingresar, forigin, fdestination, fduration)
-            db.commit()
-            return redirect(url_for('Index'))
-        except Exception as e:
-            db.rollback()
-            print("Error")
-            return render_template("/index.html")
+        print(forigin)
+        print(fdestination)
+        print(fduration)
+        #try:
+        print("bp")
+        db.execute(ingresar, {"forigin" :forigin, "fdestination" :fdestination, "fduration" :fduration})
+    
+        #db.execute("INSERT INTO flights (origin, destination, duration) VALUES (?,?,?)", forigin, fdestination, fduration)
+        db.commit()
+        print("bp1")
+
+        return redirect(url_for('index'))
+       # except:
+            #db.rollback()
+        '''    print("Error")
+            return render_template("index.html")'''
 

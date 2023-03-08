@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\Omarr\OneDrive\Escritorio\CRUD-With-Flask\env"
+VIRTUAL_ENV="C:\Users\WEB50\Desktop\CRUD-With-Flask\env"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
