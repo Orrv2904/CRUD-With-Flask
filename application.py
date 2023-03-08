@@ -42,44 +42,46 @@ def editar_registro():
     # Actualiza registro en la base de datos
     try:
         actualizar = text("UPDATE flights SET origin=:origen, destination=:destino, duration=:duracion WHERE id=:id")
-        db.session.execute(actualizar, {'origen': origen, 'destino': destino, 'duracion': duracion, 'id': id_viaje})
+        db.execute(actualizar, {'origen': origen, 'destino': destino, 'duracion': duracion, 'id': id_viaje})
         db.commit()
+        db.close()
+        return redirect("/")
     except Exception as e:
         db.rollback()
         print("Error")
-        return render_template("/")
-    # Redirige al usuario a la página de detalles del registro actualizado
-    #flash('Registro actualizado correctamente', 'success')
-    #return redirect(url_for('Index'))
+        return redirect("/")
 
 @app.route('/agregar_vuelo', methods=['POST'])
 def agregar_vuelo():
     if request.method == 'POST':
         if not request.form.get("origin") or not  request.form.get("destination") or not  request.form.get("duration"):
-            #flash("Complete los campos faltantes")
             return render_template("/")
         forigin = request.form.get("origin")
         fdestination = request.form.get("destination")
         fduration = request.form.get("duration")
-        ingresar = text("INSERT INTO flights (origin, destination, duration) VALUES (:forigin,:fdestination,:fduration)")
-        #db.execute(ingresar, forigin, fdestination, fduration)
-        #db.commit()
-        #flash("Vuelo registrado correctamente")
-        #return redirect(url_for('Index'))
-        print(forigin)
-        print(fdestination)
-        print(fduration)
-        #try:
-        print("bp")
-        db.execute(ingresar, {"forigin" :forigin, "fdestination" :fdestination, "fduration" :fduration})
-    
-        #db.execute("INSERT INTO flights (origin, destination, duration) VALUES (?,?,?)", forigin, fdestination, fduration)
+        try:
+            ingresar = text("INSERT INTO flights (origin, destination, duration) VALUES (:forigin,:fdestination,:fduration)")
+            db.execute(ingresar, {"forigin" :forigin, "fdestination" :fdestination, "fduration" :fduration})
+            db.commit()
+            db.close()
+            return redirect("/")
+        except Exception as e:
+            db.rollback()
+            print("Error")
+            return redirect("/")
+
+@app.route('/eliminar_vuelo', methods=['POST'])
+def eliminar_vuelo():
+    if not request.form.get("origin") or not  request.form.get("destination") or not  request.form.get("duration"):
+        return render_template("/")
+    fid = request.form.get("id")
+    try:
+        eliminar = text("DELETE FROM flights WHERE id=:id")
+        db.execute(eliminar, {'id': fid})
         db.commit()
-        print("bp1")
-
-        return redirect(url_for('index'))
-       # except:
-            #db.rollback()
-        '''    print("Error")
-            return render_template("index.html")'''
-
+        db.close()
+        return redirect("/")
+    except Exception as e:
+        db.rollback()
+        print("Error")
+        return redirect("/")
