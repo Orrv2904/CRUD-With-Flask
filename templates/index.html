@@ -60,7 +60,7 @@
         </button>
     </div>
 
-      <!-- Modal -->
+      <!-- Modal de ingreso de datos-->
       <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -69,7 +69,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form method="POST" action="/agregar_vuelo">
                         <div class="mb-3">
                             <label for="origin" class="form-label">Origen</label>
                             <input type="text" class="form-control" id="origin" name="origin" required>
@@ -89,11 +89,12 @@
         </div>
     </div>
 
+    <!-- Modal de editar datos  -->
 
     <div class="modal fade" id="edit-modal" tabindex="-1" role="dialog" aria-labelledby="edit-modal-label">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
-            <form method="POST" action="{{ url_for('editar_registro') }}">
+            <form method="POST" action="/editar_registro">
               <div class="modal-header">
                 <h5 class="modal-title" id="edit-modal-label">Editar registro</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" onclick="cerrarModal()">
@@ -123,6 +124,32 @@
           </div>
         </div>
       </div>
+
+      <!-- Modal eliminar datos -->
+
+      <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <form method="POST" id="delete-form">
+              <div class="modal-header">
+                <h5 class="modal-title" id="delete-modal-label">Eliminar registro</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" onclick="cerrarModal()">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>¿Está seguro que desea eliminar el registro?</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="cerrarModal()">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      
+
 
     
 </main>
@@ -211,6 +238,11 @@
         // Mostrar el modal de edición
         $('#edit-modal').modal('show');
       });
+      $('.delete-btn').click(function() {
+        var id = $(this).data('id');
+        $('#delete-modal').modal('show');
+        $('#delete-form').attr('action', '/eliminar_registro/' + id);
+        });
     });
   </script>
 
@@ -218,6 +250,7 @@
     function cerrarModal() 
     {
         $('#edit-modal').modal('hide');
+        $('#delete-modal').modal('hide');
     }
   </script>
 
