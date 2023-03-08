@@ -8,7 +8,9 @@ from psycopg2 import paramstyle
 
 load_dotenv()
 
+
 app = Flask(__name__)
+#app.static_folder = 'statics\sass\style.css'
 
 engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))

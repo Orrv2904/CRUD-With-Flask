@@ -47,6 +47,43 @@
             </div>
         </div>
     </div>
+
+    <div class="fixed-bottom d-flex justify-content-end mb-3 me-3">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Agregar vuelo
+        </button>
+    </div>
+    
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Agregar vuelo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="origin" class="form-label">Origen</label>
+                            <input type="text" class="form-control" id="origin" name="origin" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="destination" class="form-label">Destino</label>
+                            <input type="text" class="form-control" id="destination" name="destination" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="duration" class="form-label">Duración</label>
+                            <input type="number" class="form-control" id="duration" name="duration" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
 </main>
     <script src="/statics/js/dtb.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>

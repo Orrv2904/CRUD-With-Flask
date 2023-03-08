@@ -18,4 +18,10 @@
 
 .page-link {
   color: black !important;
+}
+
+.btn-primary {
+  position: absolute;
+  bottom: 255px;
+  right: 70px;
 }/*# sourceMappingURL=style.css.map */
