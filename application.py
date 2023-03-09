@@ -11,20 +11,18 @@ load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'web50'
-#app.static_folder = 'statics\sass\style.css'
 
 engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
 @app.route("/")
 def index():
+    '''if request.method == 'POST':'''
     leer = text("SELECT * FROM flights ORDER BY id ASC")
     flights = db.execute(leer).fetchall()
     return render_template("index.html", flights=flights, options={"order": [[1, "asc"]]})
-
-@app.route('/favicon.ico')
-def favicon():
-    return url_for('static', filename='statics/images/ico/mobilecheckintravelflightairplane_109781.ico')
+    '''if not request.method == 'GET':
+        return render_template("404.html")'''
 
 
 
@@ -35,7 +33,7 @@ def editar_registro():
     destino = request.form.get('destination')
     duracion = request.form.get('duration')
     if not origen or not destino or not duracion:
-        return redirect("/")
+        return redirect("/Not_Found")
     try:
         actualizar = text("UPDATE flights SET origin=:origen, destination=:destino, duration=:duracion WHERE id=:id")
         db.execute(actualizar, {'origen': origen, 'destino': destino, 'duracion': duracion, 'id': id_viaje})
@@ -45,7 +43,7 @@ def editar_registro():
     except Exception as e:
         db.rollback()
         print("Error")
-        return redirect("/")
+        return redirect("/Not_Found")
 
 @app.route('/agregar_vuelo', methods=['POST'])
 def agregar_vuelo():
@@ -64,14 +62,14 @@ def agregar_vuelo():
         except Exception as e:
             db.rollback()
             print("Error")
-            return redirect("/")
+            return redirect("/Not_Found")
 
 @app.route('/eliminar_vuelo', methods=['POST'])
 def eliminar_vuelo():
     if request.method == 'POST':
         fid = request.form.get("id")
     if not fid:
-      return redirect("/")
+      return redirect("/Not_Found")
     try:
       # Verifica si el ID del vuelo está presente en la tabla 'flights'
       resultado = text("SELECT id FROM flights WHERE id=:id")
@@ -88,8 +86,8 @@ def eliminar_vuelo():
     except Exception as e:
       db.rollback()
       print("Error: ", str(e))
-      return redirect("/")
+      return redirect("/Not_Found")
 
-@app.route('/confirmacion')
-def confirmacion():
-    return "El vuelo ha sido eliminado exitosamente."
+@app.route('/Not_Found')
+def Not_Found():
+    return render_template("404.html")
