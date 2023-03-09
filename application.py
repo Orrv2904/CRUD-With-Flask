@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, request, flash, redirect
-from flask import url_for
+from flask import url_for, session
+from authlib.integrations.flask_client import OAuth
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import scoped_session, sessionmaker
 from dotenv import load_dotenv
@@ -91,3 +92,7 @@ def eliminar_vuelo():
 @app.route('/Not_Found')
 def Not_Found():
     return render_template("404.html")
+
+@app.route('/Auth')
+def Auth():
+    return render_template("auth.html")
