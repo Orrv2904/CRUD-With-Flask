@@ -30,16 +30,12 @@ def favicon():
 
 @app.route('/editar_registro', methods=['POST'])
 def editar_registro():
-    # Recopila datos del formulario
     id_viaje = request.form.get('id')
     origen = request.form.get('origin')
     destino = request.form.get('destination')
     duracion = request.form.get('duration')
-    # Valida datos del formulario
-    #if not origen or not destino or not duracion:
-        #flash('Todos los campos son requeridos', 'error')
-        #return redirect(url_for('editar_registro', id=id_registro))
-    # Actualiza registro en la base de datos
+    if not origen or not destino or not duracion:
+        return redirect("/")
     try:
         actualizar = text("UPDATE flights SET origin=:origen, destination=:destino, duration=:duracion WHERE id=:id")
         db.execute(actualizar, {'origen': origen, 'destino': destino, 'duracion': duracion, 'id': id_viaje})
@@ -72,16 +68,28 @@ def agregar_vuelo():
 
 @app.route('/eliminar_vuelo', methods=['POST'])
 def eliminar_vuelo():
-    if not request.form.get("origin") or not  request.form.get("destination") or not  request.form.get("duration"):
-        return render_template("/")
-    fid = request.form.get("id")
+    if request.method == 'POST':
+        fid = request.form.get("id")
+    if not fid:
+      return redirect("/")
     try:
-        eliminar = text("DELETE FROM flights WHERE id=:id")
-        db.execute(eliminar, {'id': fid})
-        db.commit()
-        db.close()
+      # Verifica si el ID del vuelo está presente en la tabla 'flights'
+      resultado = text("SELECT id FROM flights WHERE id=:id")
+      db.execute(resultado, {'id': fid}).fetchone()
+      if resultado is None:
         return redirect("/")
+            
+      # Elimina el vuelo de la tabla 'flights'
+      eliminar = text("DELETE FROM flights WHERE id=:id")
+      db.execute(eliminar, {'id': fid})
+      db.commit()
+      db.close()
+      return redirect("/")
     except Exception as e:
-        db.rollback()
-        print("Error")
-        return redirect("/")
+      db.rollback()
+      print("Error: ", str(e))
+      return redirect("/")
+
+@app.route('/confirmacion')
+def confirmacion():
+    return "El vuelo ha sido eliminado exitosamente."
