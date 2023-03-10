@@ -34,7 +34,7 @@ def editar_registro():
     destino = request.form.get('destination')
     duracion = request.form.get('duration')
     if not origen or not destino or not duracion:
-        return redirect("/Not_Found")
+        abort(404)
     try:
         actualizar = text("UPDATE flights SET origin=:origen, destination=:destino, duration=:duracion WHERE id=:id")
         db.execute(actualizar, {'origen': origen, 'destino': destino, 'duracion': duracion, 'id': id_viaje})
@@ -44,7 +44,7 @@ def editar_registro():
     except Exception as e:
         db.rollback()
         print("Error")
-        return redirect("/Not_Found")
+        abort(404)
 
 @app.route('/agregar_vuelo', methods=['POST'])
 def agregar_vuelo():
@@ -63,14 +63,14 @@ def agregar_vuelo():
         except Exception as e:
             db.rollback()
             print("Error")
-            return redirect("/Not_Found")
+            abort(404)
 
 @app.route('/eliminar_vuelo', methods=['POST'])
 def eliminar_vuelo():
     if request.method == 'POST':
         fid = request.form.get("id")
     if not fid:
-      return redirect("/Not_Found")
+      abort(404)
     try:
       # Verifica si el ID del vuelo está presente en la tabla 'flights'
       resultado = text("SELECT id FROM flights WHERE id=:id")
@@ -87,12 +87,12 @@ def eliminar_vuelo():
     except Exception as e:
       db.rollback()
       print("Error: ", str(e))
-      return redirect("/Not_Found")
-
-@app.route('/Not_Found')
-def Not_Found():
-    return render_template("404.html")
+      abort(404)
 
 @app.route('/Auth')
 def Auth():
     return render_template("auth.html")
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
