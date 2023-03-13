@@ -7,7 +7,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from dotenv import load_dotenv
 from psycopg2 import paramstyle
 from werkzeug.security import generate_password_hash, check_password_hash
-from Tables import *
+#from Tables import *
 from Forms import *
 #from flask_login import UserMixin
 from flask import abort
@@ -122,33 +122,32 @@ def register():
         remail = request.form.get("email")
         rpassword = request.form.get("password")
         hashed_password = generate_password_hash(rpassword)
-    if not request.form.get("name") or not request.form.get("email") or not request.form.get("password"):
-        return render_template("/Auth")
-    '''verificar_usuario = text("SELECT name FROM users WHERE name = :rname")
-    verificar_correo = text("SELECT email FROM users WHERE email = :remail")
-    res2 = db.execute(verificar_usuario, {"rname" :rname})
-    res3 = db.execute(verificar_correo, {"remail" :remail})
-    user = res2.fetchone()
-    email = res3.fetchone()
-    try:
-        tamañouser = len(user)
-        tamañoemail = len(email)
-    except Exception as e:
-        return render_template("404.html")'''
-    '''if len(user) > 0 or len(email) > 0:
-        print(user)
-        print(email)'''
-    try:
-        agregar_usuario = text("INSERT INTO users (name, email, password) VALUES (:rname, :remail, :hashed_password)")
-        db.execute(agregar_usuario, {"rname" :rname, "remail" :remail, "hashed_password" :hashed_password})
-        db.commit()
-        db.close()
-        return redirect('/Auth')
-    except Exception as e:
-        db.rollback()
-        print("Error: ", str(e))
-        abort(404)
-    #session["user_id"] = new_user
+
+        if not rname or not remail or not rpassword:
+            return render_template("/Auth")
+
+        try:
+            verificar_usuario = text("SELECT EXISTS(SELECT 1 FROM users WHERE name = :rname)")
+            verificar_correo = text("SELECT EXISTS(SELECT 1 FROM users WHERE email = :remail)")
+            res2 = db.execute(verificar_usuario, {"rname" :rname})
+            res3 = db.execute(verificar_correo, {"remail" :remail})
+            user_exists = res2.fetchone()[0]
+            email_exists = res3.fetchone()[0]
+
+            if user_exists or email_exists:
+                return render_template("/Auth")
+            
+            agregar_usuario = text("INSERT INTO users (name, email, password) VALUES (:rname, :remail, :hashed_password)")
+            db.execute(agregar_usuario, {"rname" :rname, "remail" :remail, "hashed_password" :hashed_password})
+            db.commit()
+            db.close()
+            return redirect('/Auth')
+        except Exception as e:
+            db.rollback()
+            print("Error: ", str(e))
+            abort(404)
+
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
