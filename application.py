@@ -7,10 +7,11 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from dotenv import load_dotenv
 from psycopg2 import paramstyle
 from werkzeug.security import generate_password_hash, check_password_hash
-#from models import User
-from flask_login import UserMixin
+from Tables import *
+from Forms import *
+#from flask_login import UserMixin
 from flask import abort
-
+from flask_sqlalchemy import SQLAlchemy
 from helpers import login_required, redirecthome
 
 
@@ -19,6 +20,7 @@ load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'web50'
+
 
 engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
@@ -29,6 +31,7 @@ def log():
 
 @app.route("/flights", methods=['GET'])
 @login_required
+#@redirecthome
 def index():
     if request.method == 'GET':
         leer = text("SELECT * FROM flights ORDER BY id ASC")
@@ -121,7 +124,7 @@ def register():
         hashed_password = generate_password_hash(rpassword)
     if not request.form.get("name") or not request.form.get("email") or not request.form.get("password"):
         return render_template("/Auth")
-    verificar_usuario = text("SELECT name FROM users WHERE name = :rname")
+    '''verificar_usuario = text("SELECT name FROM users WHERE name = :rname")
     verificar_correo = text("SELECT email FROM users WHERE email = :remail")
     res2 = db.execute(verificar_usuario, {"rname" :rname})
     res3 = db.execute(verificar_correo, {"remail" :remail})
@@ -131,7 +134,7 @@ def register():
         tamañouser = len(user)
         tamañoemail = len(email)
     except Exception as e:
-        return render_template("404.html")
+        return render_template("404.html")'''
     '''if len(user) > 0 or len(email) > 0:
         print(user)
         print(email)'''
@@ -148,7 +151,6 @@ def register():
     #session["user_id"] = new_user
 
 @app.route('/login', methods=['GET', 'POST'])
-@redirecthome
 def login():
     if request.method == 'POST':
         lemail = request.form.get("email")
