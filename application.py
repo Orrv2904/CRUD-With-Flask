@@ -12,7 +12,7 @@ from Forms import *
 #from flask_login import UserMixin
 from flask import abort
 #from flask_sqlalchemy import SQLAlchemy
-from helpers import login_required, redirecthome
+from helpers import login_required
 
 
 load_dotenv()
@@ -42,7 +42,6 @@ def log():
 
 @app.route("/flights", methods=['GET'])
 @login_required
-#@redirecthome
 def index():
     if request.method == 'GET':
         leer = text("SELECT * FROM flights ORDER BY id ASC")
