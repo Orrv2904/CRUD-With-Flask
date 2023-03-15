@@ -11,7 +11,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from Forms import *
 #from flask_login import UserMixin
 from flask import abort
-from flask_sqlalchemy import SQLAlchemy
+#from flask_sqlalchemy import SQLAlchemy
 from helpers import login_required, redirecthome
 
 
@@ -25,9 +25,20 @@ app.config['SECRET_KEY'] = 'web50'
 engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
+@app.after_request
+def after_request(response):
+    """Ensure responses aren't cached"""
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Expires"] = 0
+    response.headers["Pragma"] = "no-cache"
+    return response
+
 @app.route("/")
 def log():
-    return render_template("auth.html")
+    if session.get("user_id") is None:
+        return render_template("auth.html")
+    else:
+        return redirect("/flights")
 
 @app.route("/flights", methods=['GET'])
 @login_required

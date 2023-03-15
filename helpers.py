@@ -18,23 +18,3 @@ def login_required(f):
             return redirect("/auth")
         return f(*args, **kwargs)
     return decorated_function
-
-'''
-def redirecthome(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if session.get("user_id") is not None:
-            return redirect("/flights")
-        return f(*args, **kwargs)
-    return decorated_function
-'''
-
-def redirecthome(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if session.get("user_id") is not None:
-            if request.referrer and "/login" in request.referrer:
-                return redirect("/flights")
-            return redirect("/")
-        return f(*args, **kwargs)
-    return decorated_function
