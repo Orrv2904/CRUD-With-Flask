@@ -134,6 +134,7 @@ def register():
         hashed_password = generate_password_hash(rpassword)
 
         if not rname or not remail or not rpassword:
+            flash("Por favor ingrese todos los campos", "info")
             return render_template("/Auth")
 
         try:
@@ -145,16 +146,19 @@ def register():
             email_exists = res3.fetchone()[0]
 
             if user_exists or email_exists:
+                flash("El usuario o el correo electrónico ya existe", "error")
                 return render_template("/Auth")
             
             agregar_usuario = text("INSERT INTO users (name, email, password) VALUES (:rname, :remail, :hashed_password)")
             db.execute(agregar_usuario, {"rname" :rname, "remail" :remail, "hashed_password" :hashed_password})
             db.commit()
             db.close()
+            flash("Usuario registrado exitosamente", "success")
             return redirect('/Auth')
         except Exception as e:
             db.rollback()
             print("Error: ", str(e))
+            #flash("Ha ocurrido un error", "error")
             abort(404)
 
 
